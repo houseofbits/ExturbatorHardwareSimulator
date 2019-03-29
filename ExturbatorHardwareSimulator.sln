@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.489
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ExturbatorHardwareSimulator", "ExturbatorHardwareSimulator\ExturbatorHardwareSimulator.vcxproj", "{F69A01DF-84F2-470A-9E28-98146BE398D3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F69A01DF-84F2-470A-9E28-98146BE398D3}.Debug|x64.ActiveCfg = Debug|x64
+		{F69A01DF-84F2-470A-9E28-98146BE398D3}.Debug|x64.Build.0 = Debug|x64
+		{F69A01DF-84F2-470A-9E28-98146BE398D3}.Debug|x86.ActiveCfg = Debug|Win32
+		{F69A01DF-84F2-470A-9E28-98146BE398D3}.Debug|x86.Build.0 = Debug|Win32
+		{F69A01DF-84F2-470A-9E28-98146BE398D3}.Release|x64.ActiveCfg = Release|x64
+		{F69A01DF-84F2-470A-9E28-98146BE398D3}.Release|x64.Build.0 = Release|x64
+		{F69A01DF-84F2-470A-9E28-98146BE398D3}.Release|x86.ActiveCfg = Release|Win32
+		{F69A01DF-84F2-470A-9E28-98146BE398D3}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {53E553DF-9526-470E-8D28-C2BB1530FBDC}
+	EndGlobalSection
+EndGlobal
