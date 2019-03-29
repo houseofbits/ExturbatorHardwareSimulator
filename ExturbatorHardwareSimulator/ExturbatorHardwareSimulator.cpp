@@ -2,57 +2,13 @@
 #include <iostream>
 #include <tchar.h>
 
-enum PacketClassEnumerator : unsigned short
-{
-	COMMAND = 0,
-	STATUS,
-	//	EXT_PROCESS,
-	//	PUL_PROCESS,
-	//	WND_PROCESS
-};
-
-enum GlobalCommandEnumerator : unsigned short
-{
-	GET_STATUS = 0,		//Get system status
-//	GET_PROCESS_DATA,	//Get full settings of system 
-};
-
-enum GlobalStatusType : unsigned short
-{
-	STATUS_IDLE = 0,		//System is on, idling
-	STATUS_PREPARING,		//System is preparing for process start
-	STATUS_READY,			//System is ready to start process
-	STATUS_PROCESS_RUNNING,	//Process has started
-	STATUS_ERROR
-};
-
-struct CommandInStructure {
-	GlobalCommandEnumerator command;
-};
-struct StatusOutStructure {
-	GlobalStatusType	status;
-	unsigned short		statusCode;
-};
-/*
-struct EXTRBEXT_ProcessDataPacketIn {
-	StatusPacketIn status;
-	//Extruder specific data
-};
-struct EXTRBPUL_ProcessDataPacketIn {
-	StatusPacketIn status;
-	//Puller specific data
-};
-struct EXTRBWND_ProcessDataPacketIn {
-	StatusPacketIn status;
-	//Winder specific data
-};
-*/
-
-typedef CompleteDataPacket<StatusOutStructure, PacketClassEnumerator> StatusDataPacket;
-
-
 class Hardware : public CSerialEx, public DataPacketReceiver<PacketClassEnumerator> {
 public:
+	Hardware() : DataPacketReceiver<PacketClassEnumerator>(PACKET_HEADER) 
+	{
+
+	}
+
 	unsigned char buffer[MAX_PAYLOAD_SIZE];
 	unsigned int size;
 
@@ -116,11 +72,11 @@ public:
 			}
 		}
 	}
-	virtual void onReceivePacket(PacketClassEnumerator classType, unsigned char* buffer, unsigned short size) {
+	void OnReceivePacket(PacketClassEnumerator classType, unsigned char* buffer, unsigned short size) {
 
 		if (classType == COMMAND) {
 
-			cout << "Received COMMAND packet" << endl;
+			cout << "Received COMMAND packet----------------------" << endl;
 
 			DataPacket<CommandInStructure> packet;
 			packet.fromBytes(buffer, size);

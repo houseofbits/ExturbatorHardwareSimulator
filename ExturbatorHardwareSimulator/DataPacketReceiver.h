@@ -45,8 +45,7 @@ static int memsearch(const char *hay, int haysize, const char *needle, int needl
 //#define PACKET_HEADER "EXTRBCRE"
 //#define PULLER_HEADER "EXTRBPUL"
 //#define WINDER_HEADER "EXTRBWDR"		
-
-#define PACKET_HEADER "EXTRBEXT"
+//#define PACKET_HEADER "EXTRBEXT"
 
 #define MAX_PAYLOAD_SIZE 512
 #define RECEIVE_BUFFER_SIZE 512
@@ -106,8 +105,7 @@ template<typename PAYLOAD_TYPE, typename PACKET_TYPE_ENUMERATOR>
 class CompleteDataPacket : public DataPacket <CompletePacket<PAYLOAD_TYPE, PACKET_TYPE_ENUMERATOR>> {
 public:
 	CompleteDataPacket() : DataPacket<CompletePacket<PAYLOAD_TYPE, PACKET_TYPE_ENUMERATOR>>() {	}
-	CompleteDataPacket(const char* header) {
-		CompleteDataPacket();
+	CompleteDataPacket(const char* header) : CompleteDataPacket() {
 		for (unsigned int i = 0; i < 8; i++) {
 			this->packet.data.header.name[i] = header[i];
 		}
@@ -125,6 +123,7 @@ public:
 	}
 	void setPayload(PAYLOAD_TYPE data) {
 		this->packet.data.payload = data;
+		calculateChecksum();
 	}
 	PAYLOAD_TYPE& getPayload() {
 		return this->packet.data.payload;
@@ -141,6 +140,12 @@ public:
 	{
 		headerSize = sizeof(HeaderDataPart<PACKET_TYPE_ENUMERATOR>);
 		_reset();
+		memset(headerName, 0, 8);
+	}
+	DataPacketReceiver(const char* header) : DataPacketReceiver() {
+		for (unsigned int i = 0; i < 8; i++) {
+			headerName[i] = header[i];
+		}
 	}
 	~DataPacketReceiver() {}
 
@@ -153,7 +158,7 @@ public:
 			if (_checkHeaderStart()) {
 				state = WAITING_HEADER_END;
 			}
-			break;
+			//break;
 		case WAITING_HEADER_END:
 			if (_checkHeaderEnd()) {
 				state = RECEIVING_DATA;
@@ -169,7 +174,7 @@ public:
 			break;
 		case CHECK_DATA_INTEGRITY:
 			unsigned char crc = CRC8((const unsigned char*)&receiveBuffer, headerData.packet.data.payloadSize);
-			//cout << "CRC rec:" << (int)receiveBuffer[receiveIndex]<<" calc:"<<(int)crc << endl;
+			//cout << "CRC rec:" << (int)receiveBuffer[receiveIndex]<<" calc:"<<(int)crc <<" / "<<(crc == receiveBuffer[receiveIndex])<< endl;
 			if (crc == receiveBuffer[receiveIndex]) {
 				OnReceivePacket(headerData.packet.data.classType, receiveBuffer, receiveIndex);
 			}
@@ -194,15 +199,17 @@ private:
 		memset(&receiveBuffer[0], 0, RECEIVE_BUFFER_SIZE);
 	}
 	bool _checkHeaderStart() {
-		int found = memsearch((char*)receiveBuffer, 512, PACKET_HEADER, 8);
+		int found = memsearch((char*)receiveBuffer, 512, (char*)headerName, 8);
 		if (found >= 0) {
+			//cout << headerName<<" = "<< found << endl;
 			headerStartIndex = found;
 			return true;
 		}
 		return false;
 	}
 	bool _checkHeaderEnd() {
-		if (receiveIndex - headerStartIndex + 1 == headerSize) {
+		//cout << "check header end"<< receiveIndex<<" - "<< headerStartIndex<<" hsize:"<< headerSize << endl;
+		if (receiveIndex - headerStartIndex + 1 == headerSize) {			
 			headerData.fromBytes(&receiveBuffer[headerStartIndex], headerSize);
 			if (headerData.packet.data.payloadSize < (unsigned short)MAX_PAYLOAD_SIZE) {
 				return true;
@@ -224,4 +231,5 @@ private:
 	unsigned short				receiveIndex;
 	unsigned int				headerStartIndex;
 	unsigned short				headerSize;
+	char						headerName[8];
 };

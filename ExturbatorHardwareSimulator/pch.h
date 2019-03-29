@@ -12,6 +12,8 @@
 #include "DataPacketReceiver.h"
 #include "Serial.h"
 
+#include "ExtruderConfig.h"
+
 using namespace std;
 
 #endif //PCH_H
