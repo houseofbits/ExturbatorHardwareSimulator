@@ -14,6 +14,9 @@ public:
 
 	void init(string portName) {
 		LONG    lLastError = ERROR_SUCCESS;
+
+		portName = "\\\\.\\" + portName;
+
 		std::wstring ws;
 		ws.assign(portName.begin(), portName.end());
 		lLastError = Open(&ws[0]);
@@ -68,11 +71,14 @@ public:
 			} while (dwBytesRead == sizeof(szBuffer) - 1);
 
 			for (unsigned int i = 0; i < dwBytesRead; i++) {
+				//cout << szBuffer[i] << endl;
 				readPacketByte(szBuffer[i]);
 			}
 		}
 	}
 	void OnReceivePacket(PacketClassEnumerator classType, unsigned char* buffer, unsigned short size) {
+
+		cout << "receive packet " << classType<< endl;
 
 		if (classType == COMMAND) {
 
@@ -144,7 +150,7 @@ int main() {
 
 
 
-	hw.init("COM4");
+	hw.init("COM7");
 
 	while (true) {}
 

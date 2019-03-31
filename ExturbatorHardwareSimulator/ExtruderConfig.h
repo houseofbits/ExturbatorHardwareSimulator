@@ -4,7 +4,8 @@
 
 enum PacketClassEnumerator : unsigned short
 {
-	COMMAND = 0,
+	HEADER = 0,
+	COMMAND,
 	STATUS,
 	CONFIGURATION
 	//...
